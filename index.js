@@ -16,10 +16,6 @@ const getElapsedTime = (timer) => {
     return `${process.hrtime(timer)[0]}.${paddedMs} seconds`;
 };
 
-const apiDataServer = () => {
-    return getRand(4, 6);
-};
-
 const getEmployees = async () => {
 	return new Promise((resolve, reject) => {
 		const ms = getRand(1000, 3000);
@@ -34,5 +30,32 @@ const getEmployees = async () => {
 	});
 }
 
+const apiDataServer = async () => {
 
-console.log(apiDataServer());
+	const timer = startElapsedTime();
+
+	const obj = {
+		employees: [],
+		info: {
+			service: 'API Data Service',
+			version: 'v6.34',
+			elapsedTime: ''
+		}
+	};
+
+	try {
+		obj.employees = await getEmployees();
+	}
+	catch (e) {
+		obj.employees = [];	
+	}
+
+	obj.info.elapsedTime = getElapsedTime(timer);
+
+	return obj;
+};
+
+(async () => {
+	const data = await apiDataServer();
+	console.log(data);
+})();
