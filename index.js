@@ -20,4 +20,19 @@ const apiDataServer = () => {
     return getRand(4, 6);
 };
 
+const getEmployees = async () => {
+	return new Promise((resolve, reject) => {
+		const ms = getRand(1000, 3000);
+		const num = getRand(1, 2);
+		setTimeout(() => {
+			if (num !== 1) {
+				resolve([{ name: "Jack", age: 34 }, {name:"Angie", age: 55}]);
+			} else {
+				reject(new Error('API could not process your request.'));
+			}
+		}, ms);
+	});
+}
+
+
 console.log(apiDataServer());
