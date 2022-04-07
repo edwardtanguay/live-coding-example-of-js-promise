@@ -58,6 +58,7 @@ const apiDataServer = async () => {
 
     const obj = {
         employees: [],
+		events: [],
         errors: [],
         info: {
             service: 'API Data Service',
@@ -75,6 +76,17 @@ const apiDataServer = async () => {
             message: e.message
         });
     }
+
+	try {
+		obj.events = await getEvents();
+	}
+	catch (e) {
+		obj.events = [];
+		obj.errors.push({
+			dataSource: 'events',
+			message: e.message
+		});
+	}
 
     obj.info.elapsedTime = getElapsedTime(timer);
 
