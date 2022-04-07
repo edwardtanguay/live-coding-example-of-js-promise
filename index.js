@@ -79,33 +79,20 @@ const apiDataServer = async () => {
 		});
 	}
 
-	obj.info.elapsedTime = getElapsedTime(timer);
-	return getEvents()
-		.then((events) => {
-			obj.events = events;
-			return obj;
-		})
-		.catch((e) => {
-			obj.events = [];
-			obj.errors.push({
-				dataSource: 'employees',
-				message: e.message,
-			});
-			return obj;
+	try {
+		obj.events = await getEvents();
+	}
+	catch (e) {
+		obj.events = [];
+		obj.errors.push({
+			dataSource: 'events',
+			message: e.message
 		});
+	}
 
-	// try {
-	// 	obj.events = await getEvents();
-	// }
-	// catch (e) {
-	// 	obj.events = [];
-	// 	obj.errors.push({
-	// 		dataSource: 'events',
-	// 		message: e.message
-	// 	});
-	// }
+	obj.info.elapsedTime = getElapsedTime(timer);
 
-	// return obj;
+	return obj;
 };
 
 (async () => {
