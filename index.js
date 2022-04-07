@@ -17,50 +17,71 @@ const getElapsedTime = (timer) => {
 };
 
 const getEmployees = async () => {
-	return new Promise((resolve, reject) => {
-		const ms = getRand(1000, 3000);
-		const num = getRand(1, 2);
+    return new Promise((resolve, reject) => {
+        const ms = getRand(1000, 3000);
+        const num = getRand(1, 2);
+        setTimeout(() => {
+            if (num !== 1) {
+                resolve([
+                    { name: 'Jack', age: 34 },
+                    { name: 'Angie', age: 55 }
+                ]);
+            } else {
+                reject(new Error('API could not process your request.'));
+            }
+        }, ms);
+    });
+};
+
+const getEvents = async () =>
+    new Promise((resolve, reject) => {
+        const ms = getRand(1000, 3000);
+        const num = getRand(1, 2);
 		setTimeout(() => {
 			if (num !== 1) {
-				resolve([{ name: "Jack", age: 34 }, {name:"Angie", age: 55}]);
+				resolve([
+					{
+						date: "2022-05-12", eventName: "Svelte Conference"
+					},
+					{
+						date: "2022-05-15", eventName: "NextJS Conference"
+					}
+				]);
 			} else {
-				reject(new Error('API could not process your request.'));
+				reject(new Error('Conference data server is down.'));
 			}
 		}, ms);
-	});
-}
+    });
 
 const apiDataServer = async () => {
+    const timer = startElapsedTime();
 
-	const timer = startElapsedTime();
+    const obj = {
+        employees: [],
+        errors: [],
+        info: {
+            service: 'API Data Service',
+            version: 'v6.34',
+            elapsedTime: ''
+        }
+    };
 
-	const obj = {
-		employees: [],
-		errors: [],
-		info: {
-			service: 'API Data Service',
-			version: 'v6.34',
-			elapsedTime: ''
-		}
-	};
+    try {
+        obj.employees = await getEmployees();
+    } catch (e) {
+        obj.employees = [];
+        obj.errors.push({
+            dataSource: 'employees',
+            message: e.message
+        });
+    }
 
-	try {
-		obj.employees = await getEmployees();
-	}
-	catch (e) {
-		obj.employees = [];
-		obj.errors.push({
-			dataSource: "employees",
-			message: e.message
-		});
-	}
+    obj.info.elapsedTime = getElapsedTime(timer);
 
-	obj.info.elapsedTime = getElapsedTime(timer);
-
-	return obj;
+    return obj;
 };
 
 (async () => {
-	const data = await apiDataServer();
-	console.log(data);
+    const data = await apiDataServer();
+    console.log(data);
 })();
